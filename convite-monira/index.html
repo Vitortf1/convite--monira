@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Convite Especial</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin-top: 80px;
+      font-size: 3em;
+      animation: brilhoTexto 1s infinite alternate;
+    }
+
+    @keyframes brilhoTexto {
+      0%, 100% { text-shadow: 0 0 10px white; }
+      50% { text-shadow: 0 0 20px white; }
+    }
+
+    @keyframes brilhoBotao {
+      0%, 100% { box-shadow: 0 0 20px lime; }
+      50% { box-shadow: 0 0 40px lime; }
+    }
+
+    #sim {
+      font-size: 3em;
+      padding: 30px 60px;
+      margin: 20px;
+      background-color: limegreen;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      animation: brilhoBotao 1s infinite alternate;
+      transition: transform 0.2s;
+    }
+
+    #sim:hover {
+      transform: scale(1.1);
+    }
+
+    #nao {
+      font-size: 0.7em;
+      padding: 5px 10px;
+      position: absolute;
+      background-color: gray;
+      border: none;
+      border-radius: 5px;
+      cursor: default;
+    }
+
+    #mensagem {
+      margin-top: 50px;
+      font-size: 1.4em;
+      color: #0f0;
+      display: none;
+    }
+
+    #emoji {
+      font-size: 2em;
+      margin-top: 10px;
+      display: none;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Monira, quer sair comigo?</h1>
+  <button id="sim">SIM</button>
+  <button id="nao">não</button>
+
+  <div id="mensagem">
+    Parabéns, você fez a escolha certa!!<br>
+    Você aceitou a sair com o Vitor!<br>
+    Para mais informações acesse o WhatsApp: 21967275080
+  </div>
+  <div id="emoji">❤️</div>
+  <canvas id="confete"></canvas>
+
+  <script>
+    const btnSim = document.getElementById('sim');
+    const btnNao = document.getElementById('nao');
+    const mensagem = document.getElementById('mensagem');
+    const emoji = document.getElementById('emoji');
+    const canvas = document.getElementById("confete");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const confetes = [];
+
+    btnNao.onmouseover = () => {
+      const x = Math.random() * (window.innerWidth - 60);
+      const y = Math.random() * (window.innerHeight - 60);
+      btnNao.style.left = `${x}px`;
+      btnNao.style.top = `${y}px`;
+    };
+
+    btnSim.onclick = () => {
+      mensagem.style.display = "block";
+      emoji.style.display = "block";
+      iniciarConfetes();
+      const audio = new Audio('https://www.myinstants.com/media/sounds/smb_stage_clear.mp3');
+      audio.play();
+    };
+
+    function iniciarConfetes() {
+      for (let i = 0; i < 150; i++) {
+        confetes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 5 + 2,
+          speed: Math.random() * 3 + 1,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        });
+      }
+      animar();
+    }
+
+    function animar() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let confete of confetes) {
+        ctx.beginPath();
+        ctx.arc(confete.x, confete.y, confete.size, 0, Math.PI * 2);
+        ctx.fillStyle = confete.color;
+        ctx.fill();
+        confete.y += confete.speed;
+        if (confete.y > canvas.height) confete.y = -confete.size;
+      }
+      requestAnimationFrame(animar);
+    }
+  </script>
+</body>
+</html>
